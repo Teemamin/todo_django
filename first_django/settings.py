@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import dj_database_url
+if os.path.exists("env.py"):
+    import env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2jiej$f-c4m!)+s^#u850z)#fu6tan#oc3l5mmu)+!md%9_er)'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,7 +85,7 @@ WSGI_APPLICATION = 'first_django.wsgi.application'
 # }
 
 DATABASES = {
-    'default': dj_database_url.parse('postgres://pjjgllurkvtmgt:a5624eedbdf5c905893c648ac0cb5c3a5876a7f6ef78b1871a3e44178cb7fa43@ec2-54-75-246-118.eu-west-1.compute.amazonaws.com:5432/d3iii5hl07h22j')
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 
