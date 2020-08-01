@@ -15,6 +15,10 @@ import dj_database_url
 if os.path.exists("env.py"):
     import env
 
+development = os.environ.get('DEVELOPMENT', False)
+# This means that if there's an environment variable called DEVELOPMENT in the environment.
+# This variable will be set to its value. And otherwise, it'll be false.
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,9 +30,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = development
 
-ALLOWED_HOSTS = [os.environ.get("HEROKU_HOSTNAME")]
+if development:
+    ALLOWED_HOSTS = ['localhost']
+else:
+    ALLOWED_HOSTS = [os.environ.get("HEROKU_HOSTNAME")]
 
 
 # Application definition
@@ -84,17 +91,16 @@ WSGI_APPLICATION = 'first_django.wsgi.application'
 #     }
 # }
 
-if "DATABASE_URL" in os.environ:
+if development:
     DATABASES = {
-        "default": dj_database_url.parse(os.getenv("DATABASE_URL"))
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
 else:
-    print("Postgres URL not found, using sqlite3 instead")
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-        }
+        "default": dj_database_url.parse(os.getenv("DATABASE_URL"))
     }
 
 
